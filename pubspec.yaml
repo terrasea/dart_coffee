@@ -1,0 +1,13 @@
+name: flyweight
+version: 0.0.1
+environment:
+  sdk: '>=1.2.0 <2.0.0'
+dependencies:
+  reflectable: '>=0.4.0 <0.6.0'
+dev_dependencies:
+  test: any
+transformers:
+- reflectable:
+    entry_points:
+    - bin/main.dart
+    - test/test.dart
