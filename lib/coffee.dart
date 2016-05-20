@@ -1,9 +1,11 @@
 library flyweight.coffee;
 
+import 'dart:io';
+
 import 'package:reflectable/reflectable.dart';
 
 class IsCoffee extends Reflectable {
-    const IsCoffee();
+    const IsCoffee() : super(newInstanceCapability, subtypeQuantifyCapability);
 }
 
 abstract class Coffee {
@@ -13,16 +15,16 @@ abstract class Coffee {
 
   static Map _cache = {};
   static Map get cache => _cache;
+
   Coffee();
-  factory Coffee.get(String name) => _cache.putIfAbsent(name, () => _findCoffee(name));
 
-  static Coffee _findCoffee(String name) {
-    const coffee = const IsCoffee();
-    Map coffees = coffee.annotatedClasses.fold({}, (memo, c) => memo..[c.simpleName] = c);
+  static Coffee getCoffee(String name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
 
-    var className = name.replaceAll(' ', '');
+  static Coffee _findCoffee(String name) async {
+    var coffee = new _CoffeeInstance(name);
+    await coffee.init();
 
-    return coffees.containsKey(className) ? coffees[className].newInstance('', []) : new FakeCoffee();
+    return coffee;
   }
 }
 
@@ -34,7 +36,39 @@ class FakeCoffee implements Coffee {
 
 @IsCoffee()
 class Espresso implements Coffee {
+  Espresso();
+
   String get id => "Espresso";
   String get name => 'Espresso';
   double get price => 2.5;
+}
+
+
+class _CoffeeInstance implements Coffee {
+  String _className;
+  String _id;
+  String _name;
+  double _price;
+
+  String get id => _id;
+  String get name => _name;
+  double get price => _price;
+
+  _CoffeeInstance(this._className);
+
+  init() async {
+    String content = await new File('coffees.txt').readAsString();
+    var lines = content.split('\n')
+        ..firstWhere((line) => line.toLowerCase().contains(_className.toLowerCase()));
+    var line = lines.first;
+
+    if(line != null) line = line.split(',');
+    if(line.length == 3) {
+        _id = line[0].trim();
+        _name = line[1].trim();
+        _price = double.parse(line[2].trim());
+    }
+
+    return line;
+  }
 }
