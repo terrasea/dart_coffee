@@ -3,7 +3,7 @@ library flyweight.coffee;
 import 'package:reflectable/reflectable.dart';
 
 class IsCoffee extends Reflectable {
-
+    const IsCoffee();
 }
 
 abstract class Coffee {
@@ -30,4 +30,11 @@ class FakeCoffee implements Coffee {
   String get id => "FakeCoffee";
   String get name => 'Unknown Coffee';
   double get price => 0.0;
+}
+
+@IsCoffee()
+class Espresso implements Coffee {
+  String get id => "Espresso";
+  String get name => 'Espresso';
+  double get price => 2.5;
 }
