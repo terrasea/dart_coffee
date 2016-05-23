@@ -1,74 +1,88 @@
 library flyweight.coffee;
 
-import 'dart:io';
+import 'dart:async' show Future;
 
-import 'package:reflectable/reflectable.dart';
-
-class IsCoffee extends Reflectable {
-    const IsCoffee() : super(newInstanceCapability, subtypeQuantifyCapability);
-}
+typedef Future<Coffee> CoffeeFetcher(className);
 
 abstract class Coffee {
   String get id;
+  void set id(val);
   String get name;
+  void set name(val);
   double get price;
+  void set price(val);
+
+  static CoffeeFetcher _handler;
 
   static Map _cache = {};
   static Map get cache => _cache;
 
   Coffee();
 
-  static Coffee getCoffee(String name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
+  static getCoffee(name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
+  static getCoffeeFromJson(json) async {
+    print('get coffee from json: $json');
+    return _findCoffeeFromJson(json);
+  }
 
-  static Coffee _findCoffee(String name) async {
-    var coffee = new _CoffeeInstance(name);
-    await coffee.init();
+  static _findCoffee(name) async {
+    print('find coffee');
+    return await Coffee._handler(name);
+  }
 
-    return coffee;
+  static _findCoffeeFromJson(json) async {
+    print('find coffee from json');
+    return new _CoffeeInstance.fromJson(json);
+  }
+
+  static void setInitHandler(handler) {
+    _handler = handler;
+  }
+
+  toJson() {
+    return {'id': id, 'name': name, 'price': price};
   }
 }
 
-class FakeCoffee implements Coffee {
-  String get id => "FakeCoffee";
+class FakeCoffee extends Coffee {
+  String get id => '-1';
+  void set id(val) {}
   String get name => 'Unknown Coffee';
+  void set name(val) {}
   double get price => 0.0;
-}
+  void set price(val) {}
 
-@IsCoffee()
-class Espresso implements Coffee {
-  Espresso();
-
-  String get id => "Espresso";
-  String get name => 'Espresso';
-  double get price => 2.5;
+  Future<Coffee> init() => new Future.value(this);
 }
 
 
-class _CoffeeInstance implements Coffee {
+class _CoffeeInstance extends Coffee {
   String _className;
   String _id;
   String _name;
   double _price;
 
   String get id => _id;
+  void set id(val) {
+    _id = val;
+  }
   String get name => _name;
+  void set name(val) {
+    _name = val;
+  }
   double get price => _price;
+  void set price(val) {
+    _price = val;
+  }
 
   _CoffeeInstance(this._className);
-
-  init() async {
-    String content = await new File('coffees.txt').readAsString();
-    var lines = content.split('\n')
-        ..firstWhere((line) => line.toLowerCase().contains(_className.toLowerCase()));
-    var line = lines.first;
-
-    if(line != null) line = line.split(',');
-    if(line.length == 3) {
-        _id = line[0].trim();
-        _name = line[1].trim();
-        _price = double.parse(line[2].trim());
-    }
-
-    return line;
+  _CoffeeInstance.fromJson(json) {
+    print('created coffee from json 1');
+    _id = json['id'];
+    print('created coffee from json 2');
+    _name = json['name'];
+    print('created coffee from json 3');
+    _price = json['price'];
+    print('created coffee from json final');
   }
 }

@@ -3,11 +3,12 @@ version: 0.0.1
 environment:
   sdk: '>=1.2.0 <2.0.0'
 dependencies:
-  reflectable: '>=0.4.0 <0.6.0'
+  json_rpc_2: '^2.0.1'
+  browser: any
+  dart_to_js_script_rewriter: '^0.1.0'
 dev_dependencies:
   test: any
 transformers:
-- reflectable:
-    entry_points:
-    - bin/main.dart
-    - test/test.dart
+- dart_to_js_script_rewriter
+- $dart2js:
+    minify: true
