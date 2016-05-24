@@ -12,8 +12,9 @@ var client;
 
 Future<Coffee> getCoffee(className) async {
   print('handler');
-  var json = await client.sendRequest('get', [className]);
-  return await Coffee.getCoffeeFromJson(json);
+  var json = {};
+  await client.sendRequest('get', [className]);
+  return Coffee.getCoffeeFromJson(json);
 }
 
 main() async {

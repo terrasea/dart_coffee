@@ -5,7 +5,7 @@ import 'dart:async' show Future;
 typedef Future<Coffee> CoffeeFetcher(className);
 
 abstract class Coffee {
-  String get id;
+  int get id;
   void set id(val);
   String get name;
   void set name(val);
@@ -22,17 +22,23 @@ abstract class Coffee {
   static getCoffee(name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
   static getCoffeeFromJson(json) async {
     print('get coffee from json: $json');
-    return _findCoffeeFromJson(json);
+    Coffee coffee = _findCoffeeFromJson(json);
+
+    print(coffee.toJson());
+
+    return coffee;
   }
 
-  static _findCoffee(name) async {
+  static Future<Coffee> _findCoffee(name) async {
     print('find coffee: ${Coffee._handler}');
     return await Coffee._handler(name);
   }
 
-  static _findCoffeeFromJson(json) async {
+  static Future<Coffee> _findCoffeeFromJson(json) async {
     print('find coffee from json');
-    return new _CoffeeInstance.fromJson(json);
+    var coffee = new _CoffeeInstance.fromJson(json);
+    print(coffee.toJson());
+    return coffee;
   }
 
   static void setInitHandler(handler) {
@@ -45,7 +51,7 @@ abstract class Coffee {
 }
 
 class FakeCoffee extends Coffee {
-  String get id => '-1';
+  int get id => -1;
   void set id(val) {}
   String get name => 'Unknown Coffee';
   void set name(val) {}
@@ -58,11 +64,11 @@ class FakeCoffee extends Coffee {
 
 class _CoffeeInstance extends Coffee {
   String _className;
-  String _id;
+  int _id;
   String _name;
   double _price;
 
-  String get id => _id;
+  int get id => _id;
   void set id(val) {
     _id = val;
   }

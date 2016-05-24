@@ -2,6 +2,7 @@ library flyweight.csv;
 
 import 'dart:io';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:csv/csv.dart';
 

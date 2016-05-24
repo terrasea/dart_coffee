@@ -37,12 +37,12 @@ Future<Coffee> serverHandler(String className) async {
   print(rows);
 
   
-  var row = rows.firstWhere((item) { print('$className: ${item[1]}'); return item[1].trim == className; }, orElse: () => null );
+  var row = rows.firstWhere((item) { print('$className: "${item[1].trim()}"'); return item[1].toString().contains(className); }, orElse: () => null );
   
   if(row != null) {
-    var id = row[0].trim();
+    var id = row[0];
     var name = row[1].trim();
-    var price = double.parse(row[2].trim());
+    var price = row[2];
 
     print('Not fake');
     return await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
