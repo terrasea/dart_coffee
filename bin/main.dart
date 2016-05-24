@@ -6,6 +6,7 @@ import 'dart:async' show Future;
 import "package:json_rpc_2/json_rpc_2.dart" as json_rpc;
 
 import 'package:flyweight/coffee.dart';
+import 'package:flyweight/csvparser.dart';
 
 import "package:shelf/shelf_io.dart" as io;
 import 'dart:io' show InternetAddress;
@@ -29,22 +30,19 @@ main() async {
 
 
 Future<Coffee> serverHandler(String className) async {
-  String content = await new dart_io.File('coffees.txt').readAsString();
+  print('parsing csv');
+  List rows = await CoffeeListCSVParser.parse('coffees.txt');
+  print(rows);
 
-  var line = content.split('\n').firstWhere(
-      (line) => line.toLowerCase().contains(className.toLowerCase())
-  );
+  var row = rows.firstWhere((item) => item[1] == className, orElse: () => null );
+  
+  if(row != null) {
+    var id = row[0].trim();
+    var name = row[1].trim();
+    var price = double.parse(row[2].trim());
 
-  if(line != null) {
-    var row = line.split(',');
-    if (row.length == 3) {
-      var id = row[0].trim();
-      var name = row[1].trim();
-      var price = double.parse(row[2].trim());
-
-      print('Not fake');
-      return await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
-    }
+    print('Not fake');
+    return await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
   }
   print('Fake');
   return new Future.value(new FakeCoffee());

@@ -11,7 +11,8 @@ import 'package:flyweight/coffee.dart';
 var client;
 
 Future<Coffee> getCoffee(className) async {
-  var json = {};
+  print('handler');
+  var json = await client.sendRequest('get', [className]);
   return await Coffee.getCoffeeFromJson(json);
 }
 
@@ -28,24 +29,16 @@ main() async {
   querySelector('#get-random').onClick.listen((e) async {
     print('get-random');
     Coffee coffee = await Coffee.getCoffee('Flat White');
+    outputAnswer(coffee);
   });
 }
 
 
-Future outputAnswer(answer) async {
-  print(answer.runtimeType);
+void outputAnswer(coffee) {
+  print(coffee.toJson());
 
-//  querySelector('#content').appendHtml('<div>${coffee.name}: ${coffee.price}</div>');
+  var output = querySelector('#content')
+		..appendHtml('<div>${coffee.name}: ${coffee.price}</div>');
 }
 
-Future<Coffee> clientHandler(className) async {
-  if(className is Map) {
 
-        var id = className['id'];
-        var name = className['name'];
-        var price = className['price'];
-
-  }
-
-  return klass;
-}

@@ -26,7 +26,7 @@ abstract class Coffee {
   }
 
   static _findCoffee(name) async {
-    print('find coffee');
+    print('find coffee: ${Coffee._handler}');
     return await Coffee._handler(name);
   }
 
