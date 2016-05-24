@@ -31,10 +31,13 @@ main() async {
 
 Future<Coffee> serverHandler(String className) async {
   print('parsing csv');
-  List rows = await CoffeeListCSVParser.parse('coffees.txt');
+  var cwd = dart_io.Directory.current.path;
+  print('parsing csv 2 ${cwd}');
+  List rows = await CoffeeListCSVParser.parse('${cwd}/coffees.txt');
   print(rows);
 
-  var row = rows.firstWhere((item) => item[1] == className, orElse: () => null );
+  
+  var row = rows.firstWhere((item) { print('$className: ${item[1]}'); return item[1].trim == className; }, orElse: () => null );
   
   if(row != null) {
     var id = row[0].trim();
