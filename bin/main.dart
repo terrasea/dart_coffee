@@ -21,7 +21,6 @@ main() async {
     server
       ..registerMethod("get", (json_rpc.Parameters nameParams) async {
         var name = nameParams[0].asString;
-        print(name);
         var coffee = await Coffee.getCoffee(name);
 
         return coffee;
@@ -32,25 +31,19 @@ main() async {
 
 
 Future<Coffee> serverHandler(String className) async {
-  print('parsing csv');
   var cwd = dart_io.Directory.current.path;
-  print('parsing csv 2 ${cwd}');
   List rows = await CoffeeListCSVParser.parse('${cwd}/coffees.txt');
-  print(rows);
-
   
-  var row = rows.firstWhere((item) { print('$className: "${item[1].trim()}"'); return item[1].toString().contains(className); }, orElse: () => null );
+  var row = rows.firstWhere((item) => item[1].toString().contains(className), orElse: () => null );
   
-  var skip = true;
-  if(row != null && skip) {
+  if(row != null) {
     var id = row[0];
     var name = row[1].trim();
     var price = row[2];
 
-    print('Not fake');
     Coffee coffee = await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
     return coffee;
   }
-  print('Fake');
-  return new Future.value(new FakeCoffee());
+
+  return new FakeCoffee());
 }

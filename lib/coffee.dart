@@ -21,24 +21,17 @@ abstract class Coffee {
 
   static getCoffee(name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
   static getCoffeeFromJson(Map json) async {
-    print('get coffee from json: ${json}');
     Coffee coffee = _findCoffeeFromJson(json);
-
-    print(coffee);
 
     return coffee;
   }
 
   static Future<Coffee> _findCoffee(name) async {
-    print('find coffee: ${Coffee._handler}');
     return await Coffee._handler(name);
   }
 
   static Future<Coffee> _findCoffeeFromJson(json) async {
-    print('find coffee from json');
-    var coffee = new _CoffeeInstance.fromJson(json);
-    print(coffee.toJson());
-    return coffee;
+    return new _CoffeeInstance.fromJson(json);
   }
 
   static void setInitHandler(handler) {
@@ -83,12 +76,8 @@ class _CoffeeInstance extends Coffee {
 
   _CoffeeInstance(this._className);
   _CoffeeInstance.fromJson(json) {
-    print('created coffee from json 1');
     _id = json['id'];
-    print('created coffee from json 2');
     _name = json['name'];
-    print('created coffee from json 3');
     _price = json['price'];
-    print('created coffee from json final');
   }
 }
