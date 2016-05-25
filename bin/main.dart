@@ -45,5 +45,5 @@ Future<Coffee> serverHandler(String className) async {
     return coffee;
   }
 
-  return new FakeCoffee());
+  return new FakeCoffee();
 }
