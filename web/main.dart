@@ -10,10 +10,10 @@ import 'package:flyweight/coffee.dart';
 
 var client;
 
-Future<Coffee> getCoffee(className) async {
+getCoffee(className) async {
   print('handler');
-  var json = {};
-  await client.sendRequest('get', [className]);
+  var json = await client.sendRequest('get', [className]);
+
   return Coffee.getCoffeeFromJson(json);
 }
 

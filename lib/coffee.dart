@@ -20,11 +20,11 @@ abstract class Coffee {
   Coffee();
 
   static getCoffee(name) async => _cache.putIfAbsent(name, () => _findCoffee(name));
-  static getCoffeeFromJson(json) async {
-    print('get coffee from json: $json');
+  static getCoffeeFromJson(Map json) async {
+    print('get coffee from json: ${json}');
     Coffee coffee = _findCoffeeFromJson(json);
 
-    print(coffee.toJson());
+    print(coffee);
 
     return coffee;
   }

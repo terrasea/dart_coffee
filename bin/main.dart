@@ -22,7 +22,9 @@ main() async {
       ..registerMethod("get", (json_rpc.Parameters nameParams) async {
         var name = nameParams[0].asString;
         print(name);
-        return await Coffee.getCoffee(name);
+        var coffee = await Coffee.getCoffee(name);
+
+        return coffee;
       })
       ..listen();
   }), InternetAddress.LOOPBACK_IP_V4, 4321 );
@@ -39,13 +41,15 @@ Future<Coffee> serverHandler(String className) async {
   
   var row = rows.firstWhere((item) { print('$className: "${item[1].trim()}"'); return item[1].toString().contains(className); }, orElse: () => null );
   
-  if(row != null) {
+  var skip = true;
+  if(row != null && skip) {
     var id = row[0];
     var name = row[1].trim();
     var price = row[2];
 
     print('Not fake');
-    return await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
+    Coffee coffee = await Coffee.getCoffeeFromJson({'id': id, 'name': name, 'price': price});
+    return coffee;
   }
   print('Fake');
   return new Future.value(new FakeCoffee());

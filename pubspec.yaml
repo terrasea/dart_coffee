@@ -6,7 +6,7 @@ dependencies:
   json_rpc_2: '^2.0.1'
   browser: any
   dart_to_js_script_rewriter: '^0.1.0'
-dependency_overrides:
+#dependency_overrides:
   csv: any
 #    git: https://github.com/close2/csv
 dev_dependencies:
